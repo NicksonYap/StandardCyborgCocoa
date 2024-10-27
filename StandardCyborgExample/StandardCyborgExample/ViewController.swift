@@ -20,6 +20,8 @@ class ViewController: UIViewController {
     private lazy var documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
     private lazy var sceneGltfURL = documentsURL.appendingPathComponent("scene.gltf")
     private lazy var scenePlyURL = documentsURL.appendingPathComponent("scene.ply")
+    private lazy var sceneObjURL = documentsURL.appendingPathComponent("scene.obj")
+    private lazy var sceneUsdzURL = documentsURL.appendingPathComponent("scene.usdz")
     private lazy var sceneThumbnailURL = documentsURL.appendingPathComponent("scene.png")
 
     override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent }
@@ -107,6 +109,8 @@ class ViewController: UIViewController {
     private func saveScene(scene: SCScene, thumbnail: UIImage?) {
         scene.writeToGLTF(atPath: sceneGltfURL.path)
         scene.pointCloud?.writeToPLY(atPath: scenePlyURL.path)
+        scene.pointCloud?.writeToOBJ(atPath: sceneObjURL.path)
+        scene.pointCloud?.writeToUSDZ(atPath: sceneUsdzURL.path)
         
         if let thumbnail = thumbnail, let pngData = thumbnail.pngData() {
             try? pngData.write(to: sceneThumbnailURL)
@@ -128,6 +132,14 @@ class ViewController: UIViewController {
         
         if fileManager.fileExists(atPath: scenePlyURL.path) {
             try? fileManager.removeItem(at: scenePlyURL)
+        }
+        
+        if fileManager.fileExists(atPath: sceneObjURL.path) {
+            try? fileManager.removeItem(at: sceneObjURL)
+        }
+        
+        if fileManager.fileExists(atPath: sceneUsdzURL.path) {
+            try? fileManager.removeItem(at: sceneUsdzURL)
         }
         
         if fileManager.fileExists(atPath: sceneThumbnailURL.path) {
